@@ -330,6 +330,9 @@ sub cat_file($$) {
 	} elsif($ifn =~ /\.bz2/) {
 		open($ifh, "bzip2 -dc $ifn |") ||
 			Fail("Could not open bzip2ed read file: $ifn \n");
+	} elsif($ifn =~ /\.xz/) {
+		open($ifh, "xz -dc $ifn |") ||
+			Fail("Could not open xzed read file: $ifn \n");
 	} else {
 		open($ifh, $ifn) || Fail("Could not open read file: $ifn \n");
 	}
@@ -342,7 +345,7 @@ sub cat_file($$) {
 sub wrapInput($$$) {
 	my ($unps, $mate1s, $mate2s) = @_;
 	for my $fn (@$unps, @$mate1s, @$mate2s) {
-		return 1 if $fn =~ /\.gz$/ || $fn =~ /\.bz2$/;
+		return 1 if $fn =~ /\.gz$/ || $fn =~ /\.bz2$/ || $fn =~ /\.xz$/;
 	}
 	return 0;
 }

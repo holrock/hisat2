@@ -19,13 +19,14 @@
 # along with HISAT 2.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os, sys, math, gzip, bz2
+import os, sys, math, gzip, bz2, lzma
 from argparse import ArgumentParser, FileType
 """
 """
 COMPRESSION_NON   = 0
 COMPRESSION_GZIP  = 1
 COMPRESSION_BZIP2 = 2
+COMPRESSION_XZ    = 3
 
 SEQUENCE_UNKNOWN  = -1
 SEQUENCE_FASTA    = 0
@@ -127,6 +128,9 @@ def parse_type(fname):
     elif ext.lower() == "bz2":
         compression_type = COMPRESSION_BZIP2
         ext = ff[-2]
+    elif ext.lower() == "xz":
+        compression_type = COMPRESSION_XZ
+        ext = ff[-2]
 
     if ext.lower() in FASTA_EXTENSIONS:
         sequence_type = SEQUENCE_FASTA
@@ -173,6 +177,8 @@ def reads_stat(read_file, read_count):
             fp = gzip.open(read_file, 'rt')
         elif compression_type == COMPRESSION_BZIP2:
             fp = bz2.open(read_file, 'rt')
+        elif compression_type == COMPRESSION_XZ:
+            fp = lzma.open(read_file, 'rt')
         else:
             assert (compression_type == COMPRESSION_NON)
             fp = open(read_file, 'r')
